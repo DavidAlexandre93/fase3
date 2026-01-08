@@ -1,3 +1,44 @@
+body.night-mode, .night-mode body, .night-mode {
+  background: #181818 !important;
+  color: #e0e0e0 !important;
+}
+
+.night-mode a, body.night-mode a {
+  color: #ffd700 !important;
+}
+
+.night-mode button, body.night-mode button {
+  background: #222 !important;
+  color: #ffd700 !important;
+  border: 2px solid #ffd700 !important;
+}
+
+.night-mode input, body.night-mode input {
+  background: #222 !important;
+  color: #ffd700 !important;
+  border: 2px solid #ffd700 !important;
+}
+body.high-contrast, .high-contrast body, .high-contrast {
+  background: #000 !important;
+  color: #fff !important;
+}
+
+.high-contrast a, body.high-contrast a {
+  color: #ff0 !important;
+  text-decoration: underline;
+}
+
+.high-contrast button, body.high-contrast button {
+  background: #222 !important;
+  color: #fff !important;
+  border: 2px solid #fff !important;
+}
+
+.high-contrast input, body.high-contrast input {
+  background: #111 !important;
+  color: #fff !important;
+  border: 2px solid #fff !important;
+}
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

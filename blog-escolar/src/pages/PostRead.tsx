@@ -1,3 +1,4 @@
+import AudioRead from '../components/AudioRead';
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getPostById } from "../services/postService";
@@ -35,12 +36,12 @@ const PostRead: React.FC = () => {
     <div className="page-center">
       {/* Topo roxo com título, subtítulo e infos */}
       <div className="postread-topo">
-        <div className="postread-titulo">{post.titulo}</div>
+        <div className="postread-titulo">{post.titulo} <AudioRead text={post.titulo} /></div>
         <div className="postread-infos">
-          <span className="postread-info">{post.areaDoConhecimento || "Artigos"}</span>
+          <span className="postread-info">{post.areaDoConhecimento || "Artigos"} <AudioRead text={post.areaDoConhecimento || 'Artigos'} /></span>
           {post.AtualizadoEm
-            ? <span className="postread-info">Atualizado em {post.AtualizadoEm}</span>
-            : <span className="postread-info">Publicado em {post.CriadoEm || '--'}</span>
+            ? <span className="postread-info">Atualizado em {post.AtualizadoEm} <AudioRead text={`Atualizado em ${post.AtualizadoEm}`} /></span>
+            : <span className="postread-info">Publicado em {post.CriadoEm || '--'} <AudioRead text={`Publicado em ${post.CriadoEm || '--'}`} /></span>
           }
         </div>
       </div>
@@ -48,7 +49,7 @@ const PostRead: React.FC = () => {
       {/* Se quiser exibir imagem, adicione campo no backend e frontend */}
       {/* Conteúdo do post */}
       <div className="postread-conteudo">
-        {post.conteudo}
+        {post.conteudo} <AudioRead text={post.conteudo} />
       </div>
       {/* Botão de voltar */}
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: 32 }}>

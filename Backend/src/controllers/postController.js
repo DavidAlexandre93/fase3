@@ -1,5 +1,6 @@
 import { Posts } from "../models/Post.js";
 import { Usuario } from "../models/Usuario.js";
+import { Comentario } from "../models/Comentario.js";
 
 // Função auxiliar para formatar data
 function formatarData(data) {
@@ -33,26 +34,33 @@ class PostsController {
         .skip(skip)
         .limit(limit);
 
-      const postsFormatados = posts.map(post => ({
-        id: post._id,
-        titulo: post.titulo,
-        conteudo: post.conteudo.substring(0, 200) + "...",
-        areaDoConhecimento: post.areaDoConhecimento,
-        status: post.status || "publicado",
-        CriadoEm: post.createdAt ? new Date(post.createdAt).toLocaleDateString('pt-BR') : undefined,
-        CriadoEmHora: post.createdAt ? (() => {
-          const d = new Date(post.createdAt);
-          const h = d.getHours().toString().padStart(2, '0');
-          const m = d.getMinutes().toString().padStart(2, '0');
-          return `${h}h${m}`;
-        })() : undefined,
-        AtualizadoEm: post.updatedAt ? new Date(post.updatedAt).toLocaleDateString('pt-BR') : undefined,
-        AtualizadoEmHora: post.updatedAt ? (() => {
-          const d = new Date(post.updatedAt);
-          const h = d.getHours().toString().padStart(2, '0');
-          const m = d.getMinutes().toString().padStart(2, '0');
-          return `${h}h${m}`;
-        })() : undefined
+
+      // Busca contagem de comentários para cada post
+      const postsFormatados = await Promise.all(posts.map(async post => {
+        const comentariosCount = await Comentario.countDocuments({ post: post._id });
+        return {
+          id: post._id,
+          titulo: post.titulo,
+          conteudo: post.conteudo.substring(0, 200) + "...",
+          areaDoConhecimento: post.areaDoConhecimento,
+          status: post.status || "publicado",
+          imagem: post.imagem,
+          CriadoEm: post.createdAt ? new Date(post.createdAt).toLocaleDateString('pt-BR') : undefined,
+          CriadoEmHora: post.createdAt ? (() => {
+            const d = new Date(post.createdAt);
+            const h = d.getHours().toString().padStart(2, '0');
+            const m = d.getMinutes().toString().padStart(2, '0');
+            return `${h}h${m}`;
+          })() : undefined,
+          AtualizadoEm: post.updatedAt ? new Date(post.updatedAt).toLocaleDateString('pt-BR') : undefined,
+          AtualizadoEmHora: post.updatedAt ? (() => {
+            const d = new Date(post.updatedAt);
+            const h = d.getHours().toString().padStart(2, '0');
+            const m = d.getMinutes().toString().padStart(2, '0');
+            return `${h}h${m}`;
+          })() : undefined,
+          comentariosCount
+        };
       }));
 
       res.json({

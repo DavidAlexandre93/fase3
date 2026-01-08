@@ -1,3 +1,4 @@
+import AudioRead from '../components/AudioRead';
 import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
@@ -28,29 +29,29 @@ const Login: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h1>Login</h1>
+      <h1>Login <AudioRead text="Login" /></h1>
       {error && <p style={{ color: "red" }}>{error}</p>}
       {success && <p style={{ color: "green" }}>{success}</p>}
       <div>
         <label>
-          Email:
+          Email: <AudioRead text="Email" />
           <input
             type="email"
             value={email}
             onChange={e => setEmail(e.target.value)}
             required
-          />
+          /> <AudioRead text={email} />
         </label>
       </div>
       <div>
         <label>
-          Senha:
+          Senha: <AudioRead text="Senha" />
           <input
             type="password"
             value={password}
             onChange={e => setPassword(e.target.value)}
             required
-          />
+          /> <AudioRead text={password} />
         </label>
       </div>
       <button type="submit">Entrar</button>

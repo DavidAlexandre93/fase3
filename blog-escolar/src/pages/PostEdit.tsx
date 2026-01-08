@@ -1,3 +1,4 @@
+import AudioRead from '../components/AudioRead';
 import React, { useState, useEffect } from "react";
 import "../styles/center.css";
 import { useParams, useNavigate, Link } from "react-router-dom";
@@ -5,6 +6,7 @@ import { getPostById, updatePost } from "../services/postService";
 import api from "../services/authService";
 
 const PostEdit: React.FC = () => {
+    const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const { id } = useParams();
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
@@ -57,7 +59,11 @@ const PostEdit: React.FC = () => {
         formData.append("imagem", blob, "imagem.jpg");
       }
       await updatePost(id, formData);
-      navigate("/gerenciamentodepostagens");
+      setSuccessMsg("Alterações salvas com sucesso!");
+      setTimeout(() => {
+        setSuccessMsg(null);
+        navigate("/gerenciamentodepostagens");
+      }, 1800);
     } catch {
       alert("Erro ao salvar alterações.");
     }
@@ -65,6 +71,11 @@ const PostEdit: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="page-center" style={{ maxWidth: 400, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
+      {successMsg && (
+        <div style={{ background: '#4dbec7', color: '#fff', padding: '12px 32px', borderRadius: 8, fontWeight: 600, fontSize: 16, boxShadow: '0 2px 12px #0002', textAlign: 'center', marginBottom: 12 }}>
+          {successMsg}
+        </div>
+      )}
       <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
         <Link to="/" style={{ textDecoration: "none" }}>
           <button type="button" style={{ padding: '6px 18px', borderRadius: 6, background: '#4dbec7', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 600 }}>
@@ -72,13 +83,13 @@ const PostEdit: React.FC = () => {
           </button>
         </Link>
       </div>
-      <h1>Editar Postagem</h1>
+      <h1>Editar Postagem <AudioRead text="Editar Postagem" /></h1>
       {imageSrc && (
         <div style={{ marginBottom: 16, textAlign: 'center' }}>
           <img src={imageSrc} alt="Prévia" style={{ maxWidth: 320, maxHeight: 320, borderRadius: 8 }} />
         </div>
       )}
-      <input placeholder="Título" value={title} onChange={e => { setTitle(e.target.value); setIsDirty(true); }} required />
+      <input placeholder="Título" value={title} onChange={e => { setTitle(e.target.value); setIsDirty(true); }} required /> <AudioRead text={title} />
       <textarea
         placeholder="Conteúdo"
         value={content}
@@ -86,7 +97,7 @@ const PostEdit: React.FC = () => {
         required
         rows={10}
         style={{ minHeight: 180, resize: 'vertical' }}
-      />
+      /> <AudioRead text={content} />
       <select value={area} onChange={e => { setArea(e.target.value); setIsDirty(true); }} required>
         <option value="">Selecione a área</option>
         <option value="Linguagens">Linguagens</option>

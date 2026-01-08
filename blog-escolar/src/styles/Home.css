@@ -1,3 +1,10 @@
+body {
+  min-height: 100vh;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 /* Wrapper para imagens dos cards de post */
 .home-card-img-wrapper {
   width: 100%;
@@ -186,7 +193,7 @@
 .home-bloco-roxo {
   background: #7c4dbe;
   border-radius: 32px;
-  padding: 32px 24px 24px 24px;
+  padding: 20px 24px 16px 24px;
   margin-bottom: 40px;
   color: #fff;
   box-shadow: 0 2px 16px #0001;
@@ -234,7 +241,7 @@
   background: #fff;
   color: #6c2eb7;
   border-radius: 18px;
-  box-shadow: 0 2px 12px #0001;
+  box-shadow: 0 6px 32px #7c4dbe22;
   padding: 24px 18px;
   flex: 2 1 350px;
   display: flex;
@@ -243,6 +250,8 @@
   max-width: 420px;
   text-decoration: none;
   transition: box-shadow 0.2s;
+  min-height: 260px;
+  height: 260px;
 }
 .home-card-destaque:hover {
   box-shadow: 0 6px 24px #0002;
@@ -271,7 +280,7 @@
   background: #fff;
   color: #6c2eb7;
   border-radius: 14px;
-  box-shadow: 0 1px 6px #0001;
+  box-shadow: 0 2px 12px #7c4dbe22;
   padding: 16px 12px;
   display: flex;
   flex-direction: column;
@@ -349,7 +358,7 @@
 .home-card-ultima-ret {
   background: #fff;
   border-radius: 1rem;
-  box-shadow: 0 2px 8px #0001;
+  box-shadow: 0 2px 12px #7c4dbe22;
   padding: 1.2rem 1.5rem;
   display: flex;
   flex-direction: column;
@@ -357,7 +366,8 @@
   text-decoration: none;
   color: #222;
   transition: box-shadow 0.2s;
-  min-height: 140px;
+  min-height: 260px;
+  height: 260px;
 }
 .home-card-ultima-ret:hover {
   box-shadow: 0 4px 16px #0002;
@@ -375,7 +385,7 @@
 .home-card-ultima-quad {
   background: #fff;
   border-radius: 1rem;
-  box-shadow: 0 2px 8px #0001;
+  box-shadow: 0 2px 12px #7c4dbe22;
   padding: 1.2rem 1.2rem;
   display: flex;
   flex-direction: column;
@@ -386,7 +396,8 @@
   transition: box-shadow 0.2s;
   aspect-ratio: 1/1;
   min-width: 100px;
-  min-height: 100px;
+  min-height: 260px;
+  height: 260px;
 }
 .home-card-ultima-quad:hover {
   box-shadow: 0 4px 16px #0002;
@@ -412,7 +423,7 @@
 .home-card-leia {
   background: #fff;
   border-radius: 1rem;
-  box-shadow: 0 2px 8px #0001;
+  box-shadow: 0 2px 12px #7c4dbe22;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -420,7 +431,8 @@
   padding: 0.7rem 1rem;
   text-decoration: none;
   color: #222;
-  min-height: 90px;
+  min-height: 260px;
+  height: 260px;
   transition: box-shadow 0.2s;
 }
 .home-card-leia:hover {
@@ -516,17 +528,18 @@
 }
 /* Container responsivo: adapta a tela sem perder visualização */
 .home-container {
-  width: 100vw;
+  width: 100%;
   max-width: 1100px;
-  min-width: 0;
+  min-width: 320px;
   min-height: 100vh;
   margin: 0 auto;
-  padding: 2vw 2vw 4vw 2vw;
+  padding: 0 64px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   box-sizing: border-box;
+  background: #fff;
 }
 @media (max-width: 900px) {
   .home-container {

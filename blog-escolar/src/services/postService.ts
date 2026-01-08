@@ -4,6 +4,10 @@ export const createPost = async (formData: FormData) => {
 };
 import api from "./authService";
 
+type Autor = {
+  nome: string;
+  _id: string;
+};
 type Post = {
   id: string;
   titulo: string;
@@ -14,6 +18,8 @@ type Post = {
   imagem?: string;
   CriadoEmHora?: string;
   AtualizadoEmHora?: string;
+  autor?: Autor | string;
+  comentariosCount?: number;
 };
 
 

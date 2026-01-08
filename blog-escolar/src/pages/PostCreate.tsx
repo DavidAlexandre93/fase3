@@ -1,3 +1,4 @@
+import AudioRead from '../components/AudioRead';
 import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPost } from "../services/postService";
@@ -152,7 +153,7 @@ const PostCreate: React.FC = () => {
         <div style={{ margin: '12px 0', color: feedback.includes('sucesso') ? '#4dbec7' : '#e04d4d', fontWeight: 600, textAlign: 'center' }}>{feedback}</div>
       )}
       <form onSubmit={handleSubmit} className="page-center" style={{ width: '100%', maxWidth: 400, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <h1 style={{ textAlign: 'center', marginBottom: 24 }}>Criar Postagem</h1>
+        <h1 style={{ textAlign: 'center', marginBottom: 24 }}>Criar Postagem <AudioRead text="Criar Postagem" /></h1>
 
       {/* Escolha/crop de imagem acima do título */}
       <div style={{ margin: '0 0 16px 0', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -215,8 +216,8 @@ const PostCreate: React.FC = () => {
         </div>
       )}
 
-      <input placeholder="Título" value={title} onChange={e => setTitle(e.target.value)} required style={{ margin: '12px 0', width: '100%', maxWidth: 350, textAlign: 'center' }} />
-      <textarea placeholder="Conteúdo" value={content} onChange={e => setContent(e.target.value)} required style={{ margin: '12px 0', width: '100%', maxWidth: 350, minHeight: 100, textAlign: 'center' }} />
+      <input placeholder="Título" value={title} onChange={e => setTitle(e.target.value)} required style={{ margin: '12px 0', width: '100%', maxWidth: 350, textAlign: 'center' }} /> <AudioRead text={title} />
+      <textarea placeholder="Conteúdo" value={content} onChange={e => setContent(e.target.value)} required style={{ margin: '12px 0', width: '100%', maxWidth: 350, minHeight: 100, textAlign: 'center' }} /> <AudioRead text={content} />
 
 
       <div style={{ margin: '16px 0', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

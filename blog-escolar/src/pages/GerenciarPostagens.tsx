@@ -12,7 +12,10 @@ interface Post {
   status: string;
   CriadoEm?: string;
   AtualizadoEm?: string;
+  CriadoEmHora?: string;
+  AtualizadoEmHora?: string;
   imagem?: string;
+  areaDoConhecimento?: string;
 }
 
 const GerenciarPostagens: React.FC = () => {
@@ -52,11 +55,11 @@ const GerenciarPostagens: React.FC = () => {
             (p.areaDoConhecimento && p.areaDoConhecimento.toLowerCase().includes(termo))
           );
         }
-        // Ordenação por data
-        lista = lista.sort((a, b) => {
+        // Ordenação por data (sempre decrescente)
+        lista = lista.sort((a: Post, b: Post) => {
           const dateA = new Date(a.AtualizadoEm || a.CriadoEm || 0).getTime();
           const dateB = new Date(b.AtualizadoEm || b.CriadoEm || 0).getTime();
-          return order === 'desc' ? dateB - dateA : dateA - dateB;
+          return dateB - dateA;
         });
         if (!cancelado) setPosts(lista);
         if (!cancelado && response.data.total) {
@@ -148,13 +151,15 @@ const GerenciarPostagens: React.FC = () => {
                       {post.titulo}
                     </td>
                     {/* Resumo do conteúdo (100 caracteres) */}
-                    <td style={{ padding: 8, border: "1px solid #ddd", wordBreak: 'break-word', minWidth: 220, maxWidth: 400, overflow: 'hidden', textOverflow: 'ellipsis' }}>{(post.conteudo || "").substring(0, 100)}...</td>
+                    <td style={{ padding: 8, border: "1px solid #ddd", wordBreak: 'break-word', minWidth: 220, maxWidth: 400, overflow: 'hidden', textOverflow: 'ellipsis', color: '#111' }}>{(post.conteudo || "").substring(0, 100)}...</td>
                     {/* Data/hora de publicação ou atualização */}
-                    <td style={{ padding: 8, border: "1px solid #ddd", whiteSpace: 'nowrap' }}>
+                    <td style={{ padding: 8, border: "1px solid #ddd", whiteSpace: 'nowrap', color: '#111' }}>
                       {post.AtualizadoEm || post.CriadoEm ? (
                         <>
                           {post.AtualizadoEm || post.CriadoEm}
-                          {(post.AtualizadoEmHora || post.CriadoEmHora) ? ` às ${post.AtualizadoEmHora || post.CriadoEmHora}` : ""}
+                          {('AtualizadoEmHora' in post && post.AtualizadoEmHora) || ('CriadoEmHora' in post && post.CriadoEmHora)
+                            ? ` às ${post.AtualizadoEmHora || post.CriadoEmHora}`
+                            : ""}
                         </>
                       ) : "-"}
                     </td>
