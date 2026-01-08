@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { deletePost, getPosts } from "../services/postService";
 import type { Post } from "../services/postService";
 import { Link } from "react-router-dom";
+import useQuery from "../hooks/useQuery";
 
 const normalizarTexto = (valor: string) =>
   valor
@@ -13,9 +14,7 @@ const normalizarTexto = (valor: string) =>
 
 const GerenciarPostagens: React.FC = () => {
   const { user } = useAuth();
-  const [posts, setPosts] = useState<Post[]>([]);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const limit = 10;
   const [search, setSearch] = useState("");
   // Removidos areaFilter e order pois não são mais usados
@@ -24,54 +23,41 @@ const GerenciarPostagens: React.FC = () => {
   const [toast, setToast] = useState<string | null>(null);
   const [modalPost, setModalPost] = useState<Post | null>(null);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
-  useEffect(() => {
-    let cancelado = false;
-    const fetchPosts = async () => {
-      try {
-        setLoading(true);
-        setError("");
-        const response = await getPosts({
-          page,
-          limit,
-          autor: user?.nome || undefined,
-        });
-        let lista = response.posts || [];
-        // Ordenação por data (sempre decrescente)
-        lista = lista.sort((a: Post, b: Post) => {
-          const dateA = new Date(a.AtualizadoEm || a.CriadoEm || 0).getTime();
-          const dateB = new Date(b.AtualizadoEm || b.CriadoEm || 0).getTime();
-          return dateB - dateA;
-        });
-        if (!cancelado) setPosts(lista);
-        if (!cancelado && response.total) {
-          setTotalPages(Math.ceil(response.total / limit));
-        }
-      } catch (err: any) {
-        if (!cancelado) setError("Erro ao buscar postagens.");
-      } finally {
-        if (!cancelado) setLoading(false);
-      }
-    };
-    if (user && user.nome) fetchPosts();
-    else {
-      setLoading(false);
-      setPosts([]);
-    }
-    return () => { cancelado = true; };
-  }, [user, search, page]);
+  const {
+    data: postsResponse,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: ["posts", user?.nome, page],
+    enabled: Boolean(user?.nome),
+    queryFn: () =>
+      getPosts({
+        page,
+        limit,
+        autor: user?.nome || undefined,
+      }),
+  });
 
-  const hasPosts = posts.length > 0;
-  const filteredPosts = React.useMemo(() => {
-    if (!search.trim()) return posts;
+  const orderedPosts = useMemo(() => {
+    const lista = postsResponse?.posts ? [...postsResponse.posts] : [];
+    return lista.sort((a: Post, b: Post) => {
+      const dateA = new Date(a.AtualizadoEm || a.CriadoEm || 0).getTime();
+      const dateB = new Date(b.AtualizadoEm || b.CriadoEm || 0).getTime();
+      return dateB - dateA;
+    });
+  }, [postsResponse]);
+
+  const hasPosts = orderedPosts.length > 0;
+  const filteredPosts = useMemo(() => {
+    if (!search.trim()) return orderedPosts;
     const termos = normalizarTexto(search)
       .split(/\s+/)
       .map(t => t.trim())
       .filter(Boolean);
 
-    return posts.filter((p: Post) => {
+    return orderedPosts.filter((p: Post) => {
       const titulo = p.titulo ? normalizarTexto(p.titulo) : '';
       const conteudo = p.conteudo ? normalizarTexto(p.conteudo) : '';
       const area = p.areaDoConhecimento ? normalizarTexto(p.areaDoConhecimento) : '';
@@ -80,7 +66,11 @@ const GerenciarPostagens: React.FC = () => {
       // Match quando QUALQUER palavra digitada aparece em qualquer campo
       return termos.some(t => titulo.includes(t) || conteudo.includes(t) || area.includes(t) || autor.includes(t));
     });
-  }, [posts, search]);
+  }, [orderedPosts, search]);
+
+  const totalPages = postsResponse?.total ? Math.ceil(postsResponse.total / limit) : 1;
+  const loading = Boolean(user?.nome) && isLoading;
+  const error = isError ? "Erro ao buscar postagens." : "";
 
   return (
     <div className="page-center" style={{ maxWidth: 800, margin: "0 auto", padding: 24, boxSizing: 'border-box', justifyContent: 'flex-start' }}>
@@ -120,7 +110,7 @@ const GerenciarPostagens: React.FC = () => {
       )}
       {loading && <p>Carregando...</p>}
       {!loading && error && <p style={{ color: "red" }}>{error}</p>}
-      {!loading && posts.length === 0 && (
+      {!loading && orderedPosts.length === 0 && (
         <div style={{ textAlign: 'center', marginTop: 32 }}>
           <p style={{ fontSize: 16, fontWeight: 700, color: '#111', marginBottom: 12 }}>
             Não há postagens
@@ -132,7 +122,7 @@ const GerenciarPostagens: React.FC = () => {
           </Link>
         </div>
       )}
-      {!loading && posts.length > 0 && filteredPosts.length === 0 && (
+      {!loading && orderedPosts.length > 0 && filteredPosts.length === 0 && (
         <div style={{ textAlign: 'center', marginTop: 16, width: '100%' }}>
           <p style={{ fontSize: 15, fontWeight: 700, color: '#111', margin: 0 }}>
             Nenhuma postagem encontrada para a busca.
@@ -212,7 +202,7 @@ const GerenciarPostagens: React.FC = () => {
                 setDeleting(true);
                 try {
                   await deletePost(confirmDeleteId);
-                  setPosts(posts.filter(p => p.id !== confirmDeleteId));
+                  await refetch();
                   setConfirmDeleteId(null);
                   setToast('Post excluído com sucesso!');
                   setTimeout(() => setToast(null), 2500);
