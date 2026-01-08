@@ -41,6 +41,7 @@ class PostsController {
         return {
           id: post._id,
           titulo: post.titulo,
+          autor: post.autoria,
           conteudo: post.conteudo.substring(0, 200) + "...",
           areaDoConhecimento: post.areaDoConhecimento,
           status: post.status || "publicado",
@@ -85,6 +86,7 @@ class PostsController {
 
       res.json({
         titulo: post.titulo,
+        autor: post.autoria,
         conteudo: post.conteudo,
         areaDoConhecimento: post.areaDoConhecimento,
         status: post.status || "publicado",
@@ -126,6 +128,7 @@ class PostsController {
       res.status(201).json({
         message: "Post criado com sucesso",
         titulo: novoPost.titulo,
+        autor: novoPost.autoria,
         conteudo: novoPost.conteudo.substring(0, 100) + "...",
         areaDoConhecimento: novoPost.areaDoConhecimento,
         status: novoPost.status,
@@ -203,6 +206,7 @@ class PostsController {
 
       const resultado = posts.map(post => ({
         titulo: post.titulo,
+        autor: post.autoria,
         conteudo: post.conteudo.substring(0, 200) + (post.conteudo.length > 200 ? "..." : ""),
         areaDoConhecimento: post.areaDoConhecimento,
         "criado em": formatarData(post.createdAt)

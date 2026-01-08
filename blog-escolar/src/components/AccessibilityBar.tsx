@@ -84,7 +84,7 @@ const AccessibilityBar: React.FC = () => {
       <div style={{ position: 'relative', marginLeft: 8 }}>
         <button
           style={{ padding: '10px', borderRadius: 50, background: '#fff', color: '#7c4dbe', border: '2px solid #7c4dbe', cursor: 'pointer', fontWeight: 600, fontSize: 22, boxShadow: '0 2px 8px #7c4dbe22', transition: 'background 0.2s, color 0.2s', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-          onClick={e => {
+          onClick={() => {
             const dropdown = document.getElementById('access-dropdown');
             if (dropdown) dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
           }}

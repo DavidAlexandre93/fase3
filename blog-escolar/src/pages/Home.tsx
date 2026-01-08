@@ -17,7 +17,7 @@ const AREAS_CONHECIMENTO = [
 // ...existing code...st } from "../services/postService";
 
 export const Home: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [posts, setPosts] = useState<Post[]>([]);
   const [search, setSearch] = useState("");
   const [areaSelecionada, setAreaSelecionada] = useState<string | null>(null);
@@ -69,6 +69,19 @@ export const Home: React.FC = () => {
 
   const destaque = posts[0];
   const ultimas: Post[] = posts.slice(1); // todos os demais posts vão para as listas abaixo
+
+  const getNomeAutor = (p: Post) => {
+    const autorValue = (p as any).autor;
+    if (typeof autorValue === 'object' && autorValue !== null && 'nome' in autorValue) {
+      return (autorValue as { nome?: string }).nome || 'Autor desconhecido';
+    }
+    if (typeof autorValue === 'string' && autorValue.trim()) return autorValue;
+
+    const autoriaFallback = (p as any).autoria;
+    if (typeof autoriaFallback === 'string' && autoriaFallback.trim()) return autoriaFallback;
+
+    return 'Autor desconhecido';
+  };
 
   // Comentários
   const [comentariosAbertos, setComentariosAbertos] = useState<string | null>(null); // postId
@@ -258,7 +271,7 @@ export const Home: React.FC = () => {
                     )}
                     <span className="categoria">{destaque.areaDoConhecimento || 'Artigos'}</span>
                     <span className="autor" style={{ fontSize: '0.95em', color: '#555', fontWeight: 500, marginBottom: 4 }}>
-                      {typeof destaque.autor === 'object' && destaque.autor !== null ? destaque.autor.nome : destaque.autor || 'Autor desconhecido'}
+                      Publicado por: {getNomeAutor(destaque)}
                     </span>
                     <span className="titulo">{destaque.titulo} <AudioRead text={destaque.titulo} /></span>
                     <p style={{ fontSize: '1.08rem', marginTop: 10 }}>{destaque.conteudo.substring(0, 120)}... <AudioRead text={destaque.conteudo.substring(0, 120)} /></p>
@@ -296,7 +309,7 @@ export const Home: React.FC = () => {
                 )}
                 <span className="categoria">{post.areaDoConhecimento || 'Artigos'}</span>
                 <span className="autor" style={{ fontSize: '0.95em', color: '#555', fontWeight: 500, marginBottom: 4 }}>
-                  {typeof post.autor === 'object' && post.autor !== null ? post.autor.nome : post.autor || 'Autor desconhecido'}
+                  Publicado por: {getNomeAutor(post)}
                 </span>
                     <span className="titulo">{post.titulo} <AudioRead text={post.titulo} /></span>
                     <p>{post.conteudo.substring(0, 60)}... <AudioRead text={post.conteudo.substring(0, 60)} /></p>
@@ -332,7 +345,7 @@ export const Home: React.FC = () => {
                 </div>
                 <span className="categoria">{post.areaDoConhecimento || 'Artigos'}</span>
                 <span className="autor" style={{ fontSize: '0.95em', color: '#555', fontWeight: 500, marginBottom: 4 }}>
-                  {typeof post.autor === 'object' && post.autor !== null ? post.autor.nome : post.autor || 'Autor desconhecido'}
+                  Publicado por: {getNomeAutor(post)}
                 </span>
                     <span className="titulo">{post.titulo} <AudioRead text={post.titulo} /></span>
                     <p>{post.conteudo.substring(0, 40)}... <AudioRead text={post.conteudo.substring(0, 40)} /></p>
@@ -365,7 +378,7 @@ export const Home: React.FC = () => {
                 <div className="home-card-leia-info">
                   <span className="categoria">{post.areaDoConhecimento || 'Artigos'}</span>
                   <span className="autor" style={{ fontSize: '0.95em', color: '#555', fontWeight: 500, marginBottom: 4 }}>
-                    {typeof post.autor === 'object' && post.autor !== null ? post.autor.nome : post.autor || 'Autor desconhecido'}
+                    Publicado por: {getNomeAutor(post)}
                   </span>
                   <span className="titulo">{post.titulo} <AudioRead text={post.titulo} /></span>
                   <p>{post.conteudo.substring(0, 40)}... <AudioRead text={post.conteudo.substring(0, 40)} /></p>

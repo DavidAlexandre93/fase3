@@ -1,6 +1,6 @@
 import AudioRead from '../components/AudioRead';
 import useAuth from "../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 
 const Login: React.FC = () => {
@@ -55,6 +55,12 @@ const Login: React.FC = () => {
         </label>
       </div>
       <button type="submit">Entrar</button>
+
+      <p style={{ marginTop: 12, textAlign: "center" }}>
+        <Link to="/cadastro" style={{ color: "#ffd700", textDecoration: "underline" }}>
+          Criar uma conta
+        </Link>
+      </p>
     </form>
   );
 };

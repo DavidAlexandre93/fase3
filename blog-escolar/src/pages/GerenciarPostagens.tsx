@@ -18,8 +18,14 @@ interface Post {
   areaDoConhecimento?: string;
 }
 
+const normalizarTexto = (valor: string) =>
+  valor
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+
 const GerenciarPostagens: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [posts, setPosts] = useState<Post[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -46,15 +52,6 @@ const GerenciarPostagens: React.FC = () => {
         }
         const response = await api.get(url);
         let lista = response.data.posts || [];
-        // Filtro por título, conteúdo ou área do conhecimento
-        if (search) {
-          const termo = search.toLowerCase();
-          lista = lista.filter((p: import("../services/postService").Post) =>
-            (p.titulo && p.titulo.toLowerCase().includes(termo)) ||
-            (p.conteudo && p.conteudo.toLowerCase().includes(termo)) ||
-            (p.areaDoConhecimento && p.areaDoConhecimento.toLowerCase().includes(termo))
-          );
-        }
         // Ordenação por data (sempre decrescente)
         lista = lista.sort((a: Post, b: Post) => {
           const dateA = new Date(a.AtualizadoEm || a.CriadoEm || 0).getTime();
@@ -79,57 +76,83 @@ const GerenciarPostagens: React.FC = () => {
     return () => { cancelado = true; };
   }, [user, search, page]);
 
+  const hasPosts = posts.length > 0;
+  const filteredPosts = React.useMemo(() => {
+    if (!search.trim()) return posts;
+    const termos = normalizarTexto(search)
+      .split(/\s+/)
+      .map(t => t.trim())
+      .filter(Boolean);
+
+    return posts.filter((p: Post) => {
+      const titulo = p.titulo ? normalizarTexto(p.titulo) : '';
+      const conteudo = p.conteudo ? normalizarTexto(p.conteudo) : '';
+      const area = p.areaDoConhecimento ? normalizarTexto(p.areaDoConhecimento) : '';
+
+      // Match quando QUALQUER palavra digitada aparece em qualquer campo
+      return termos.some(t => titulo.includes(t) || conteudo.includes(t) || area.includes(t));
+    });
+  }, [posts, search]);
+
   return (
-    <div className="page-center" style={{ maxWidth: 800, margin: "0 auto", padding: 24, boxSizing: 'border-box' }}>
-      <div style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          {/* Avatar do usuário */}
-          {user ? (
-            <div style={{ width: 36, height: 36, borderRadius: "50%", background: "#7c4dbe", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 18 }}>
-              {user.nome ? user.nome[0].toUpperCase() : "?"}
-            </div>
-          ) : null}
-          <span style={{ fontWeight: 600, color: '#7c4dbe', fontSize: 16 }}>
-            {user ? user.nome : "Não logado"}
-          </span>
-        </div>
-        <div style={{ display: "flex", gap: 12 }}>
-          <Link to="/" style={{ textDecoration: "none" }}>
-            <button type="button" style={{ padding: '6px 18px', borderRadius: 6, background: '#4dbec7', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 600 }}>
-              Página Inicial
-            </button>
-          </Link>
-          <button type="button" onClick={() => {
-            if (window.confirm("Deseja realmente sair?")) logout();
-          }} style={{ padding: '6px 18px', borderRadius: 6, background: '#e74c3c', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 600 }}>
-            Logout
+    <div className="page-center" style={{ maxWidth: 800, margin: "0 auto", padding: 24, boxSizing: 'border-box', justifyContent: 'flex-start' }}>
+      <div style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, gap: 12, flexWrap: 'wrap' }}>
+        <h1 style={{ margin: 0, fontWeight: 900, color: '#111', fontSize: 22 }}>
+          Gerenciamento de posts
+        </h1>
+        <Link to="/" style={{ textDecoration: "none" }}>
+          <button
+            type="button"
+            style={{ padding: '8px 16px', borderRadius: 8, background: '#4dbec7', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 700 }}
+          >
+            Voltar para a Home
           </button>
-        </div>
+        </Link>
       </div>
-      <h1 style={{ textAlign: "center", marginBottom: 24 }}>Gerenciamento de Postagens</h1>
-      <div style={{ display: 'flex', gap: 16, marginBottom: 24, flexWrap: 'wrap', justifyContent: 'center' }}>
-        <input
-          type="text"
-          placeholder="Buscar"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          style={{ padding: 8, borderRadius: 6, border: '1px solid #ccc', minWidth: 180 }}
-        />
-      </div>
-      {loading && <p>Carregando...</p>}
-      {!loading && error && <p style={{ color: "red" }}>{error}</p>}
-      {!loading && posts.length === 0 && (
-        <div style={{ textAlign: 'center', marginTop: 32 }}>
-          <p>Crie seu primeiro post</p>
-          <Link to="/criar">
-            <button style={{ padding: '10px 28px', borderRadius: 8, background: '#7c4dbe', color: '#fff', border: 'none', cursor: 'pointer', fontSize: '1rem', marginTop: 12 }}>
+      {/* Barra de busca + botão Criar (apenas quando já existem postagens) */}
+      {hasPosts && (
+        <div style={{ width: '100%', display: 'flex', gap: 16, marginBottom: 24, flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center' }}>
+          <input
+            type="text"
+            placeholder="Buscar"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{ padding: 8, borderRadius: 6, border: '1px solid #ccc', minWidth: 220, flex: '1 1 220px' }}
+          />
+
+          <Link to="/criar" style={{ textDecoration: 'none' }}>
+            <button
+              type="button"
+              style={{ padding: '10px 22px', borderRadius: 8, background: '#111', color: '#fff', border: 'none', cursor: 'pointer', fontSize: '1rem', fontWeight: 700 }}
+            >
               Criar
             </button>
           </Link>
         </div>
       )}
+      {loading && <p>Carregando...</p>}
+      {!loading && error && <p style={{ color: "red" }}>{error}</p>}
+      {!loading && posts.length === 0 && (
+        <div style={{ textAlign: 'center', marginTop: 32 }}>
+          <p style={{ fontSize: 16, fontWeight: 700, color: '#111', marginBottom: 12 }}>
+            Não há postagens
+          </p>
+          <Link to="/criar">
+            <button style={{ padding: '10px 28px', borderRadius: 8, background: '#111', color: '#fff', border: 'none', cursor: 'pointer', fontSize: '1rem', fontWeight: 800 }}>
+              Faça sua primeira postagem aqui
+            </button>
+          </Link>
+        </div>
+      )}
+      {!loading && posts.length > 0 && filteredPosts.length === 0 && (
+        <div style={{ textAlign: 'center', marginTop: 16, width: '100%' }}>
+          <p style={{ fontSize: 15, fontWeight: 700, color: '#111', margin: 0 }}>
+            Nenhuma postagem encontrada para a busca.
+          </p>
+        </div>
+      )}
       {/* Tabela de posts do professor logado */}
-      {!loading && posts.length > 0 && (
+      {!loading && filteredPosts.length > 0 && (
         <>
           <div style={{ width: '100%', overflowX: 'auto' }}>
             <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 600 }}>
@@ -144,7 +167,7 @@ const GerenciarPostagens: React.FC = () => {
               </thead>
               <tbody>
                 {/* Exibe cada post em uma linha da tabela */}
-                {posts.map(post => (
+                {filteredPosts.map(post => (
                   <tr key={post.id}>
                     {/* Apenas uma linha para o título */}
                     <td style={{ padding: 8, border: "1px solid #ddd", fontWeight: 700, color: '#7c4dbe', fontSize: 16, minWidth: 120, maxWidth: 180, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -189,7 +212,9 @@ const GerenciarPostagens: React.FC = () => {
       {confirmDeleteId && (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 999 }}>
           <div style={{ background: '#fff', padding: 32, borderRadius: 12, boxShadow: '0 2px 12px #0002', minWidth: 320, textAlign: 'center' }}>
-            <p style={{ marginBottom: 24 }}>Você tem certeza que quer excluir?</p>
+            <p style={{ marginBottom: 24, color: '#111', fontWeight: 800 }}>
+              Tem certeza que você quer excluir?
+            </p>
             <div style={{ display: 'flex', justifyContent: 'center', gap: 24 }}>
               <button disabled={deleting} onClick={async () => {
                 setDeleting(true);
@@ -218,7 +243,7 @@ const GerenciarPostagens: React.FC = () => {
           <button onClick={() => setModalPost(null)} style={{ position: 'absolute', top: 12, right: 12, background: '#e74c3c', color: '#fff', border: 'none', borderRadius: 6, padding: '4px 12px', fontWeight: 700, cursor: 'pointer' }}>Fechar</button>
           <h2 style={{ marginBottom: 12 }}>{modalPost.titulo}</h2>
           {modalPost.imagem && <img src={modalPost.imagem} alt="imagem do post" style={{ maxWidth: 180, maxHeight: 180, borderRadius: 8, marginBottom: 12 }} />}
-          <div style={{ marginBottom: 12, color: '#7c4dbe', fontWeight: 600 }}>{modalPost.areaDoConhecimento || ''}</div>
+          <div style={{ marginBottom: 12, color: '#111', fontWeight: 800 }}>{modalPost.areaDoConhecimento || ''}</div>
           <div style={{ marginBottom: 12 }}>{modalPost.conteudo}</div>
           <div style={{ fontSize: 13, color: '#888' }}>{modalPost.AtualizadoEm || modalPost.CriadoEm || '-'}</div>
           <div style={{ marginTop: 8 }}>
@@ -231,12 +256,6 @@ const GerenciarPostagens: React.FC = () => {
         </div>
       </div>
     )}
-    {/* Botão flutuante para criar novo post */}
-    <Link to="/criar" style={{ position: 'fixed', bottom: 32, right: 32, zIndex: 9999, textDecoration: 'none' }}>
-      <button style={{ background: '#7c4dbe', color: '#fff', border: 'none', borderRadius: '50%', width: 60, height: 60, fontSize: 32, fontWeight: 700, boxShadow: '0 2px 12px #0002', cursor: 'pointer' }} title="Criar novo post">
-        +
-      </button>
-    </Link>
     {/* Toast de feedback */}
     {toast && (
       <div style={{ position: 'fixed', bottom: 100, left: '50%', transform: 'translateX(-50%)', background: '#4dbec7', color: '#fff', padding: '12px 32px', borderRadius: 8, fontWeight: 600, fontSize: 16, boxShadow: '0 2px 12px #0002', zIndex: 9999 }}>
