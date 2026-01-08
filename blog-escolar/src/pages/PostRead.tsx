@@ -1,8 +1,9 @@
 import AudioRead from '../components/AudioRead';
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getPostById } from "../services/postService";
 import type { Post } from "../services/postService";
+import useQuery from "../hooks/useQuery";
 import "../styles/PostRead.css";
 import "../styles/center.css";
 
@@ -11,25 +12,19 @@ import "../styles/center.css";
 const PostRead: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [post, setPost] = useState<Post | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const {
+    data: post,
+    isLoading,
+    isError,
+  } = useQuery<Post>({
+    queryKey: ["post", id],
+    enabled: Boolean(id),
+    queryFn: () => getPostById(id as string),
+  });
 
-  // Busca o post pelo id assim que o componente carrega
-  useEffect(() => {
-    if (!id) {
-      setError("ID inválido.");
-      setLoading(false);
-      return;
-    }
-    getPostById(id as string)
-      .then(setPost)
-      .catch(() => setError("Post não encontrado."))
-      .finally(() => setLoading(false));
-  }, [id]);
-
-  if (loading) return <p style={{ textAlign: 'center' }}>Carregando...</p>;
-  if (error) return <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>;
+  if (!id) return <p style={{ color: 'red', textAlign: 'center' }}>ID inválido.</p>;
+  if (isLoading) return <p style={{ textAlign: 'center' }}>Carregando...</p>;
+  if (isError) return <p style={{ color: 'red', textAlign: 'center' }}>Post não encontrado.</p>;
   if (!post) return null;
 
   return (
