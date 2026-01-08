@@ -1,10 +1,3 @@
-body {
-  min-height: 100vh;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 /* Wrapper para imagens dos cards de post */
 .home-card-img-wrapper {
   width: 100%;
