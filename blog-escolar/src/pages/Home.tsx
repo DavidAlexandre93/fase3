@@ -1,5 +1,5 @@
 import AudioRead from '../components/AudioRead';
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { FaRegCommentDots } from "react-icons/fa";
 import { listarComentarios, criarComentario, excluirComentario } from "../services/comentarioService";
 import type { Comentario } from "../services/comentarioService";
@@ -124,7 +124,7 @@ export const Home: React.FC = () => {
                 if (!texto) return;
                 input.disabled = true;
                 try {
-                  await criarComentario(comentariosAbertos!, texto, user?.nome ?? "");
+                  await criarComentario(comentariosAbertos!, texto, nomeComentario);
                   await refetchComentarios();
                   input.value = '';
                 } catch (err) {
