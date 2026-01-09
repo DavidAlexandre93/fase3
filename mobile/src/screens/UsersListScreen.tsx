@@ -5,9 +5,11 @@ import colors from "../theme/colors";
 import { deleteUser, fetchUsers } from "../services/users";
 import type { UserRole, User } from "../types";
 import { useNavigation } from "@react-navigation/native";
+import { useAuth } from "../contexts/AuthContext";
 
 const UsersListScreen: React.FC<{ role: UserRole }> = ({ role }) => {
   const navigation = useNavigation<any>();
+  const { user } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -24,6 +26,13 @@ const UsersListScreen: React.FC<{ role: UserRole }> = ({ role }) => {
   useEffect(() => {
     loadUsers();
   }, [role]);
+
+  useEffect(() => {
+    if (user && user.role !== "professor") {
+      Alert.alert("Acesso restrito", "Apenas professores podem gerenciar usuários.");
+      navigation.navigate("Posts");
+    }
+  }, [navigation, user]);
 
   const handleDelete = (userId: string) => {
     Alert.alert("Excluir", "Deseja remover este usuário?", [
