@@ -1,17 +1,13 @@
 import React, { useState } from 'react';
 import useAuth from '../hooks/useAuth';
-import { FaFont, FaLowVision, FaArrowsAltV } from 'react-icons/fa';
-import { MdAccessibility, MdInvertColors, MdOutlineLink, MdRefresh } from 'react-icons/md';
+import { FaFont, FaArrowsAltV } from 'react-icons/fa';
+import { MdAccessibility } from 'react-icons/md';
 import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 // ...existing code...
 import NightModeToggle from './NightModeToggle';
 
 const options = [
-  { key: 'highContrast', label: 'Preto e branco', icon: <FaLowVision /> },
-  { key: 'invertColors', label: 'Inverter cores', icon: <MdInvertColors /> },
-  { key: 'highlightLinks', label: 'Destacar links', icon: <MdOutlineLink /> },
-  // Extras que já existiam no projeto
   { key: 'spacing', label: 'Espaçamento', icon: <FaArrowsAltV /> },
   { key: 'audio', label: 'Leitura por áudio', icon: <FaFont /> },
 ];
@@ -37,32 +33,16 @@ const AccessibilityBar: React.FC = () => {
   };
 
   const [fontSize, setFontSize] = React.useState(1);
-  React.useLayoutEffect(() => {
-    document.body.style.fontSize = fontSize !== 1 ? `${fontSize}em` : '';
+  React.useEffect(() => {
+    document.documentElement.style.fontSize = fontSize !== 1 ? `${fontSize}em` : '';
     document.body.style.letterSpacing = selected.includes('spacing') ? '0.12em' : '';
     document.body.style.wordSpacing = selected.includes('spacing') ? '0.18em' : '';
-    if (selected.includes('highContrast')) {
-      document.body.classList.add('high-contrast');
-    } else {
-      document.body.classList.remove('high-contrast');
-    }
-
-    if (selected.includes('invertColors')) {
-      document.body.classList.add('invert-colors');
-    } else {
-      document.body.classList.remove('invert-colors');
-    }
-
-    if (selected.includes('highlightLinks')) {
-      document.body.classList.add('highlight-links');
-    } else {
-      document.body.classList.remove('highlight-links');
-    }
-
-    // Áudio: manter flag global + notificar a UI para re-renderizar onde necessário
-    const audioEnabled = selected.includes('audio');
-    (window as any).__audioAccessibilityEnabled = audioEnabled;
-    window.dispatchEvent(new CustomEvent('accessibility:audio', { detail: { enabled: audioEnabled } }));
+    return () => {
+      document.documentElement.style.fontSize = '';
+      document.body.style.letterSpacing = '';
+      document.body.style.wordSpacing = '';
+      document.body.classList.remove('night-mode');
+    };
   }, [selected, fontSize]);
 
   const toggleOption = (key: string) => {
