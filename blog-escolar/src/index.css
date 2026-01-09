@@ -1,68 +1,247 @@
+body.night-mode,
+.night-mode body,
+.night-mode {
+  background: #181818 !important;
+  color: #e0e0e0 !important;
+  --app-background: #181818;
+  --app-surface: #202020;
+  --app-text: #e0e0e0;
+  --app-muted: #b9b9b9;
+  --app-gradient: linear-gradient(135deg, #181818 0%, #181818 100%);
+  --app-border: rgba(255, 255, 255, 0.14);
+}
+
+.night-mode a,
+body.night-mode a {
+  color: #ffd700 !important;
+}
+
+.night-mode button,
+body.night-mode button {
+  background: #222 !important;
+  color: #ffd700 !important;
+  border: 2px solid #ffd700 !important;
+}
+
+.night-mode input,
+body.night-mode input {
+  background: #222 !important;
+  color: #ffd700 !important;
+  border: 2px solid #ffd700 !important;
+}
+
+body.high-contrast,
+.high-contrast body,
+.high-contrast {
+  /* Mais suave: ainda com alto contraste, mas sem “preto chapado” */
+  background: #0f1116 !important;
+  color: #f3f4f7 !important;
+  --app-background: #0f1116;
+  --app-surface: #151826;
+  --app-text: #f3f4f7;
+  --app-muted: rgba(243, 244, 247, 0.78);
+  --app-gradient: linear-gradient(135deg, #0f1116 0%, #13162a 55%, #0f1116 100%);
+  --app-border: rgba(255, 255, 255, 0.22);
+}
+
+/* Força o layout a respeitar os modos (MainLayout usa header/footer próprios) */
+body.night-mode header,
+.night-mode header {
+  background: #111 !important;
+  border-bottom-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+body.night-mode footer,
+.night-mode footer {
+  background: rgba(17, 17, 17, 0.92) !important;
+  color: #e0e0e0 !important;
+  border-top-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+body.high-contrast header,
+.high-contrast header {
+  background: #0f1116 !important;
+  border-bottom-color: rgba(255, 255, 255, 0.22) !important;
+  box-shadow: none !important;
+}
+
+body.high-contrast footer,
+.high-contrast footer {
+  background: rgba(15, 17, 22, 0.92) !important;
+  color: #f3f4f7 !important;
+  border-top-color: rgba(255, 255, 255, 0.22) !important;
+}
+
+/* Inverter cores (modo acessibilidade) */
+body.invert-colors,
+.invert-colors body,
+.invert-colors {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* Destacar links (modo acessibilidade) */
+body.highlight-links a,
+.highlight-links a {
+  text-decoration: underline !important;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 3px;
+  background: rgba(255, 230, 0, 0.35);
+  border-radius: 6px;
+  padding: 0 4px;
+}
+
+.high-contrast a,
+body.high-contrast a {
+  color: #ffe873 !important;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 3px;
+}
+
+.high-contrast button,
+body.high-contrast button {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #f3f4f7 !important;
+  border: 1px solid rgba(255, 255, 255, 0.32) !important;
+}
+
+/* Badge/label de Área do Conhecimento (sempre legível) */
+body .categoria {
+  color: #111 !important;
+}
+
+body.night-mode .categoria {
+  background: #ffd700 !important;
+  color: #111 !important;
+  border: 1px solid #111 !important;
+}
+
+body.high-contrast .categoria {
+  background: rgba(255, 232, 115, 0.92) !important;
+  color: #111 !important;
+  border: 1px solid rgba(0, 0, 0, 0.35) !important;
+}
+
+.high-contrast input,
+body.high-contrast input {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #f3f4f7 !important;
+  border: 1px solid rgba(255, 255, 255, 0.32) !important;
+}
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --app-font-base: 'Inter', system-ui, -apple-system, sans-serif;
+  --app-font-fun: 'Kalam', 'Inter', system-ui, -apple-system, sans-serif;
+
+  font-family: var(--app-font-base);
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
+  color: #1b1b1b;
+  background-color: #f4f6f8;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  --app-background: #f4f6f8;
+  --app-surface: #ffffff;
+  --app-text: #1b1b1b;
+  --app-muted: #5f6470;
+  --app-accent: #7c4dbe;
+  --app-accent-strong: #5b2fa6;
+  --app-accent-soft: #efe7fb;
+  --app-gradient: linear-gradient(135deg, #f7f4ff 0%, #f2f8ff 45%, #fdf6f2 100%);
+  --app-shadow: 0 18px 45px rgba(92, 51, 164, 0.18);
+  --app-card-shadow: 0 14px 32px rgba(26, 24, 46, 0.08);
+  --app-border: rgba(124, 77, 190, 0.12);
+  --app-radius-lg: 24px;
+  --app-radius-md: 16px;
+}
+
+/* Fonte mais divertida/desenhada para títulos e marca */
+h1,
+h2,
+h3,
+.app-fun-font {
+  font-family: var(--app-font-fun);
+  letter-spacing: 0.2px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+  font-weight: 600;
+  color: var(--app-accent);
+  text-decoration: none;
 }
 a:hover {
-  color: #535bf2;
+  color: #5a34a6;
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
+  min-height: 100vh;
+  background: var(--app-gradient);
+  color: var(--app-text);
+}
+
+#root {
   min-height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+button {
+  font-family: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-weight: 600;
+  background: var(--app-accent);
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(124, 77, 190, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 25px rgba(124, 77, 190, 0.3);
+  background: var(--app-accent-strong);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  box-shadow: none;
+}
+
+input,
+textarea,
+select {
+  border-radius: 14px;
+  border: 1px solid var(--app-border);
+  padding: 12px 16px;
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(24, 20, 57, 0.06);
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: rgba(124, 77, 190, 0.45);
+  box-shadow: 0 12px 22px rgba(124, 77, 190, 0.18);
 }

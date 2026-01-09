@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  app:
+    image: carolinesant/blog:desenvolvimento
+    container_name: blog_app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - blog_network
+
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: blog_tests
+    env_file:
+      - .env
+    depends_on:
+      - app
+    command: ["npm", "test"]
+    networks:
+      - blog_network
+
+networks:
+  blog_network:
+    driver: bridge

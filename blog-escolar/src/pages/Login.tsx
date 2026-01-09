@@ -1,10 +1,11 @@
+import AudioRead from '../components/AudioRead';
 import useAuth from "../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 
 const Login: React.FC = () => {
   // Estados para armazenar usuário e senha digitados
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -17,7 +18,7 @@ const Login: React.FC = () => {
     setError("");
     setSuccess("");
     try {
-      await login(username, password);
+      await login(email, password);
       setTimeout(() => {
         navigate("/"); // Redireciona para a Home após login
       }, 1000);
@@ -27,33 +28,59 @@ const Login: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h1>Login</h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {success && <p style={{ color: "green" }}>{success}</p>}
-      <div>
-        <label>
-          Usuário:
-          <input
-            type="text"
-            value={username}
-            onChange={e => setUsername(e.target.value)}
-            required
-          />
+    <form className="login-form" onSubmit={handleSubmit}>
+      <h1 className="login-title">
+        Login <AudioRead text="Login" />
+      </h1>
+      <p className="login-subtitle">
+        Acesse sua conta para publicar e interagir com os conteúdos.
+      </p>
+
+      {error && <div className="login-alert login-alert--error" role="alert">{error}</div>}
+      {success && <div className="login-alert login-alert--success" role="status">{success}</div>}
+
+      <div className="login-field">
+        <label className="login-label" htmlFor="login-email">
+          Email <AudioRead text="Email" />
         </label>
+        <input
+          id="login-email"
+          className="login-input"
+          type="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          required
+          autoComplete="email"
+          aria-invalid={Boolean(error) || undefined}
+        />
       </div>
-      <div>
-        <label>
-          Senha:
-          <input
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            required
-          />
+
+      <div className="login-field">
+        <label className="login-label" htmlFor="login-password">
+          Senha <AudioRead text="Senha" />
         </label>
+        <input
+          id="login-password"
+          className="login-input"
+          type="password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          required
+          autoComplete="current-password"
+          aria-invalid={Boolean(error) || undefined}
+        />
       </div>
-      <button type="submit">Entrar</button>
+
+      <div className="login-actions">
+        <button className="login-submit" type="submit">
+          Entrar
+        </button>
+      </div>
+
+      <p className="login-footer">
+        Ainda não tem conta?{' '}
+        <Link to="/cadastro">Criar uma conta</Link>
+      </p>
     </form>
   );
 };

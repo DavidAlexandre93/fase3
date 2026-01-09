@@ -1,0 +1,45 @@
+{
+  "name": "blog",
+  "version": "1.0.0",
+  "description": "API de blogging com autenticação, testes e CI/CD",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "test": "cross-env NODE_ENV=test jest --coverage"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.3.1",
+    "multer": "^2.0.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.23.0",
+    "babel-jest": "^29.7.0",
+    "cross-env": "^10.1.0",
+    "jest": "^29.7.0",
+    "mongodb-memory-server": "^10.2.3",
+    "nodemon": "^3.1.0",
+    "supertest": "^7.1.4"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    },
+    "testEnvironment": "node",
+    "verbose": true
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
+  }
+}
