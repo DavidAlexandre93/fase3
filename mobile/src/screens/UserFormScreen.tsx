@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 import AppButton from "../components/AppButton";
 import AppInput from "../components/AppInput";
 import colors from "../theme/colors";
@@ -66,15 +66,29 @@ const UserFormScreen: React.FC<{ route: any; navigation: any }> = ({ route, navi
           ? `Editar ${role === "professor" ? "professor" : "aluno"}`
           : `Novo ${role === "professor" ? "professor" : "aluno"}`}
       </Text>
-      <AppInput label="Nome" value={nome} onChangeText={setNome} />
-      <AppInput label="Email" value={email} onChangeText={setEmail} />
-      <AppInput
-        label={mode === "edit" ? "Nova senha (opcional)" : "Senha"}
-        value={senha}
-        onChangeText={setSenha}
-        secureTextEntry
-      />
-      <AppButton title={loading ? "Salvando..." : "Salvar"} onPress={handleSubmit} disabled={loading} />
+      <View style={styles.card}>
+        <AppInput label="Nome" value={nome} onChangeText={setNome} placeholder="Nome completo" />
+        <AppInput
+          label="Email"
+          value={email}
+          onChangeText={setEmail}
+          placeholder="usuario@email.com"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          autoCorrect={false}
+          textContentType="emailAddress"
+        />
+        <AppInput
+          label={mode === "edit" ? "Nova senha (opcional)" : "Senha"}
+          value={senha}
+          onChangeText={setSenha}
+          secureTextEntry
+          autoCapitalize="none"
+          autoCorrect={false}
+          textContentType="password"
+        />
+        <AppButton title={loading ? "Salvando..." : "Salvar"} onPress={handleSubmit} disabled={loading} />
+      </View>
     </ScrollView>
   );
 };
@@ -90,6 +104,18 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     marginBottom: 16,
     color: colors.text,
+  },
+  card: {
+    backgroundColor: colors.white,
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 6 },
+    shadowRadius: 12,
+    elevation: 2,
   },
 });
 

@@ -65,10 +65,12 @@ const UsersListScreen: React.FC<{ role: UserRole }> = ({ role }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{role === "professor" ? "Professores" : "Alunos"}</Text>
-      <AppButton
-        title={role === "professor" ? "Cadastrar professor" : "Cadastrar aluno"}
-        onPress={() => navigation.navigate("UserForm", { mode: "create", role })}
-      />
+      <View style={styles.addButton}>
+        <AppButton
+          title={role === "professor" ? "Cadastrar professor" : "Cadastrar aluno"}
+          onPress={() => navigation.navigate("UserForm", { mode: "create", role })}
+        />
+      </View>
       <FlatList
         data={users}
         keyExtractor={(item) => item.id}
@@ -93,7 +95,8 @@ const UsersListScreen: React.FC<{ role: UserRole }> = ({ role }) => {
             </View>
           ) : null
         }
-        contentContainerStyle={{ paddingVertical: 16 }}
+        contentContainerStyle={[styles.listContent, users.length === 0 && styles.listEmptyContent]}
+        ListEmptyComponent={!loading ? <Text style={styles.emptyText}>Nenhum usuário encontrado.</Text> : null}
       />
     </View>
   );
@@ -110,6 +113,9 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     marginBottom: 16,
     color: colors.text,
+  },
+  addButton: {
+    marginBottom: 16,
   },
   card: {
     padding: 16,
@@ -136,6 +142,18 @@ const styles = StyleSheet.create({
   },
   footer: {
     marginTop: 8,
+  },
+  listContent: {
+    paddingVertical: 8,
+  },
+  listEmptyContent: {
+    flexGrow: 1,
+    justifyContent: "center",
+  },
+  emptyText: {
+    textAlign: "center",
+    color: colors.muted,
+    fontWeight: "600",
   },
 });
 

@@ -1,4 +1,5 @@
 import React from "react";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -10,6 +11,7 @@ import PostFormScreen from "../screens/PostFormScreen";
 import AdminPostsScreen from "../screens/AdminPostsScreen";
 import UsersListScreen from "../screens/UsersListScreen";
 import UserFormScreen from "../screens/UserFormScreen";
+import colors from "../theme/colors";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -37,7 +39,11 @@ const AppNavigator = () => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return null;
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
   }
 
   return (
@@ -59,3 +65,12 @@ const AppNavigator = () => {
 };
 
 export default AppNavigator;
+
+const styles = StyleSheet.create({
+  loading: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: colors.background,
+  },
+});
