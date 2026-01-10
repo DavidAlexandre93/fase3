@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, KeyboardAvoidingView, Platform, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import AppButton from "../components/AppButton";
 import AppInput from "../components/AppInput";
 import colors from "../theme/colors";
@@ -23,25 +24,56 @@ const LoginScreen: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Blog Escolar</Text>
-      <Text style={styles.subtitle}>Acesso para docentes e estudantes</Text>
-      <AppInput label="Email" value={email} onChangeText={setEmail} placeholder="professor@email.com" />
-      <AppInput label="Senha" value={senha} onChangeText={setSenha} secureTextEntry placeholder="Sua senha" />
-      <AppButton title={loading ? "Entrando..." : "Entrar"} onPress={handleLogin} disabled={loading} />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.keyboard}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Blog Escolar</Text>
+          <Text style={styles.subtitle}>Acesso para docentes e estudantes</Text>
+        </View>
+        <View style={styles.card}>
+          <AppInput
+            label="Email"
+            value={email}
+            onChangeText={setEmail}
+            placeholder="professor@email.com"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
+            textContentType="emailAddress"
+          />
+          <AppInput
+            label="Senha"
+            value={senha}
+            onChangeText={setSenha}
+            secureTextEntry
+            placeholder="Sua senha"
+            autoCapitalize="none"
+            autoCorrect={false}
+            textContentType="password"
+          />
+          <AppButton title={loading ? "Entrando..." : "Entrar"} onPress={handleLogin} disabled={loading} />
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 24,
-    justifyContent: "center",
     backgroundColor: colors.background,
   },
+  keyboard: {
+    flex: 1,
+    justifyContent: "center",
+    padding: 24,
+  },
+  header: {
+    alignItems: "center",
+    marginBottom: 28,
+  },
   title: {
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: "700",
     color: colors.text,
     textAlign: "center",
@@ -50,7 +82,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.muted,
     textAlign: "center",
-    marginBottom: 32,
+    marginTop: 6,
+  },
+  card: {
+    backgroundColor: colors.white,
+    borderRadius: 16,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: colors.border,
+    shadowColor: "#000",
+    shadowOpacity: 0.06,
+    shadowOffset: { width: 0, height: 6 },
+    shadowRadius: 12,
+    elevation: 2,
   },
 });
 

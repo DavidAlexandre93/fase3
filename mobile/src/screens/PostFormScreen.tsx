@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 import AppButton from "../components/AppButton";
 import AppInput from "../components/AppInput";
 import colors from "../theme/colors";
@@ -74,11 +74,24 @@ const PostFormScreen: React.FC<{ route: any; navigation: any }> = ({ route, navi
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 32 }}>
       <Text style={styles.title}>{mode === "edit" ? "Editar Postagem" : "Nova Postagem"}</Text>
-      <AppInput label="Título" value={titulo} onChangeText={setTitulo} />
-      <AppInput label="Autor" value={autoria} onChangeText={setAutoria} />
-      <AppInput label="Área do conhecimento" value={area} onChangeText={setArea} />
-      <AppInput label="Conteúdo" value={conteudo} onChangeText={setConteudo} multiline />
-      <AppButton title={loading ? "Salvando..." : "Salvar"} onPress={handleSubmit} disabled={loading} />
+      <View style={styles.card}>
+        <AppInput label="Título" value={titulo} onChangeText={setTitulo} placeholder="Digite o título" />
+        <AppInput label="Autor" value={autoria} onChangeText={setAutoria} placeholder="Nome do autor" />
+        <AppInput
+          label="Área do conhecimento"
+          value={area}
+          onChangeText={setArea}
+          placeholder="Ex.: Ciências da Natureza"
+        />
+        <AppInput
+          label="Conteúdo"
+          value={conteudo}
+          onChangeText={setConteudo}
+          multiline
+          placeholder="Escreva o conteúdo da postagem"
+        />
+        <AppButton title={loading ? "Salvando..." : "Salvar"} onPress={handleSubmit} disabled={loading} />
+      </View>
     </ScrollView>
   );
 };
@@ -94,6 +107,18 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     marginBottom: 16,
     color: colors.text,
+  },
+  card: {
+    backgroundColor: colors.white,
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 6 },
+    shadowRadius: 12,
+    elevation: 2,
   },
 });
 

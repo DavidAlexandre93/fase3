@@ -9,6 +9,10 @@ type Props = {
   placeholder?: string;
   secureTextEntry?: boolean;
   multiline?: boolean;
+  keyboardType?: "default" | "email-address" | "numeric" | "phone-pad";
+  autoCapitalize?: "none" | "sentences" | "words" | "characters";
+  autoCorrect?: boolean;
+  textContentType?: "emailAddress" | "password" | "name" | "none";
 };
 
 const AppInput: React.FC<Props> = ({
@@ -18,6 +22,10 @@ const AppInput: React.FC<Props> = ({
   placeholder,
   secureTextEntry,
   multiline,
+  keyboardType,
+  autoCapitalize,
+  autoCorrect,
+  textContentType,
 }) => {
   return (
     <View style={styles.wrapper}>
@@ -30,6 +38,10 @@ const AppInput: React.FC<Props> = ({
         placeholderTextColor={colors.muted}
         secureTextEntry={secureTextEntry}
         multiline={multiline}
+        keyboardType={keyboardType}
+        autoCapitalize={autoCapitalize}
+        autoCorrect={autoCorrect}
+        textContentType={textContentType}
       />
     </View>
   );

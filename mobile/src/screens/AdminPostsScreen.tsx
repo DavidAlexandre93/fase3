@@ -60,7 +60,9 @@ const AdminPostsScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Administração de postagens</Text>
-      <AppButton title="Criar postagem" onPress={() => navigation.navigate("PostForm", { mode: "create" })} />
+      <View style={styles.addButton}>
+        <AppButton title="Criar postagem" onPress={() => navigation.navigate("PostForm", { mode: "create" })} />
+      </View>
       <FlatList
         data={posts}
         keyExtractor={(item) => item._id}
@@ -78,7 +80,10 @@ const AdminPostsScreen: React.FC = () => {
             </View>
           </View>
         )}
-        contentContainerStyle={{ paddingVertical: 16 }}
+        contentContainerStyle={[styles.listContent, posts.length === 0 && styles.listEmptyContent]}
+        ListEmptyComponent={
+          !loading ? <Text style={styles.emptyText}>Nenhuma postagem cadastrada.</Text> : null
+        }
       />
     </View>
   );
@@ -95,6 +100,9 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     marginBottom: 16,
     color: colors.text,
+  },
+  addButton: {
+    marginBottom: 16,
   },
   card: {
     padding: 16,
@@ -118,6 +126,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     gap: 12,
+  },
+  listContent: {
+    paddingVertical: 8,
+  },
+  listEmptyContent: {
+    flexGrow: 1,
+    justifyContent: "center",
+  },
+  emptyText: {
+    textAlign: "center",
+    color: colors.muted,
+    fontWeight: "600",
   },
 });
 
